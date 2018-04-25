@@ -34,10 +34,10 @@ $(function() {
          });
 
          it('name are defined', function() {
-           for (var i = 0; allFeeds.length > i; i++) {
-             expect(allFeeds[i].name).toBeDefined();
-             expect(allFeeds[i].name.length).not.toBe(0);
-           }
+           allFeeds.forEach(function(feed) {
+             expect(feed.name).toBeDefined();
+             expect(feed.name.length).not.toBe(0);
+           });
          });
     });
 
@@ -47,16 +47,11 @@ $(function() {
       });
 
       it('are hidden on click', function() {
-        // Click event
-        var clicked = false;
-        $('.menu-icon-link').on('click', function() {
-          clicked = !clicked;
-        });
-        // Clicked once
-        expect($('body').hasClass('menu-hidden') && clicked).toBe(false);
+        $('.menu-icon-link').click();
+        expect($('body').hasClass('menu-hidden')).toBe(false);
 
-        // Clicked twice
-        expect($('body').hasClass('menu-hidden') && !clicked).toBe(true);
+        $('.menu-icon-link').click();
+        expect($('body').hasClass('menu-hidden')).toBe(true);
       });
     });
 
@@ -68,21 +63,28 @@ $(function() {
       });
 
       it('at least a .entry element', function (done){
-        expect($('.entry').length).toBeGreaterThan(0);
+        expect($('.feed .entry').length).toBeGreaterThan(0);
         done();
       });
     });
 
     describe('New Feed Selection', function() {
-      var entries = $('.entry').length;
+      var feed = null;
       beforeEach(function(done) {
-        loadFeed(0, function(){
+        loadFeed(0, function() {
+          feed = $('.feed').html();
+          done();
+        });
+      });
+
+      beforeEach(function(done) {
+        loadFeed(1, function() {
           done();
         });
       });
 
       it('increase entries', function (done){
-        expect($('.entry').length).toBeGreaterThan(entries);
+        expect($('.feed').html()).not.toEqual(feed);
         done();
       });
     });
